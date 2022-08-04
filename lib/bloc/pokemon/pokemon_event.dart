@@ -5,3 +5,5 @@ abstract class PokemonEvent {
 }
 
 class PokemonInitEvent extends PokemonEvent {}
+
+class PokemonRefreshEvent extends PokemonEvent {}

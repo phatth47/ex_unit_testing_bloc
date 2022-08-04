@@ -30,6 +30,9 @@ void main() {
     name: 'Kanto',
     listPokemon: [],
   );
+
+  const errorString = 'oops';
+
   group('PokemonBloc', () {
     late MockPokemonRepository pokemonRepository;
 
@@ -70,6 +73,9 @@ void main() {
           PokemonLoading(),
           PokemonData(pokemonResponse: pokemonResponseData),
         ],
+        verify: (_) async {
+          verify(pokemonRepository.getListPokemonGenI()).called(1);
+        },
       );
     });
 
@@ -98,12 +104,29 @@ void main() {
         build: buildBloc,
         setUp: (() {
           when(pokemonRepository.getListPokemonGenI())
-              .thenThrow(Exception('oops'));
+              .thenThrow(Exception(errorString));
         }),
         act: (bloc) => bloc.add(PokemonInitEvent()),
+        skip: 1, /// Skip 1 state. Specify here is: PokemonLoading()
         expect: () => [
-          PokemonLoading(),
-          const PokemonError(error: 'oops'),
+          const PokemonError(error: errorString),
+        ],
+      );
+    });
+
+    group('Refresh Pokemon Error', () {
+      blocTest<PokemonBloc, PokemonState>(
+        'emit [PokemonData : old data] when Refresh Error',
+        build: buildBloc,
+        setUp: (() {
+          when(pokemonRepository.getListPokemonGenI())
+              .thenThrow(Exception(errorString));
+        }),
+        seed: () => PokemonData(pokemonResponse: pokemonResponseData),
+        act: (bloc) => bloc.add(PokemonRefreshEvent()),
+        skip: 1,
+        expect: () => [
+          PokemonData(pokemonResponse: pokemonResponseData),
         ],
       );
     });
