@@ -10,17 +10,16 @@ part 'pokemon_event.dart';
 part 'pokemon_state.dart';
 
 class PokemonBloc extends Bloc<PokemonEvent, PokemonState> {
-  final repository = PokemonRepository();
+  final PokemonRepository pokemonRepository;
 
-  PokemonBloc() : super(PokemonInitial()) {
+  PokemonBloc({required this.pokemonRepository}) : super(PokemonInitial()) {
     on<PokemonInitEvent>(_onPokemonInitEvent);
   }
 
   Future<void> _onPokemonInitEvent(PokemonInitEvent event, emit) async {
     try {
       emit(PokemonLoading());
-      await Future.delayed(const Duration(seconds: 2));
-      final pokemonResponse = await repository.getListPokemonGenI();
+      final pokemonResponse = await pokemonRepository.getListPokemonGenI();
       final listPokemon = pokemonResponse.listPokemon;
 
       if (listPokemon.isEmpty) {

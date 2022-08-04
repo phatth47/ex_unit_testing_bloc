@@ -1,5 +1,6 @@
 import 'package:ex_unit_testing_bloc/bloc/pokemon/pokemon_bloc.dart';
 import 'package:ex_unit_testing_bloc/model/pokemon.dart';
+import 'package:ex_unit_testing_bloc/repository/repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -12,11 +13,13 @@ class PokemonScreen extends StatefulWidget {
 
 class _PokemonScreenState extends State<PokemonScreen> {
   late PokemonBloc pokemonBloc;
+  late PokemonRepository pokemonRepository;
 
   @override
   void initState() {
     super.initState();
-    pokemonBloc = PokemonBloc();
+    pokemonRepository = PokemonRepository();
+    pokemonBloc = PokemonBloc(pokemonRepository: pokemonRepository);
   }
 
   @override
